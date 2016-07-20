@@ -21,12 +21,10 @@ class Ohlc:
         # Create table
         self.c.execute('''CREATE TABLE IF NOT EXISTS ohlc
                      (time real, open real, high real, low real, close real, vwap real, volume real, count real)''')
-        self.db.commit()     
-        print self.c.fetchall()
+        self.db.commit()
         
-        while True:
-            self.update()
-            time.sleep(5)
+        self.update()
+
        #<time>, <open>, <high>, <low>, <close>, <vwap>, <volume>, <count>
     def update(self):    
         response = self.kraken.QueryPublic('OHLC', {'pair': self.pair, 'interval' : self.interval})
@@ -37,12 +35,30 @@ class Ohlc:
             data = response['result'][self.pair]
             last = response['result']['last']
             #print data, dateTime
-            print type(data[-1][1])
             
-            #self.c.executemany('INSERT INTO ohlc VALUES (?,?,?,?,?,?,?,?)', data)
-            #self.db.commit()     
+            self.c.executemany('INSERT INTO ohlc VALUES (?,?,?,?,?,?,?,?)', data)
+            self.db.commit()
+            
             self.c.execute("SELECT open FROM ohlc")
-            print self.c.fetchall()
+            data = self.c.fetchall()
+            print len(data)
+            
+            self.c.execute('SELECT MIN(time) time FROM ohlc GROUP BY time')
+            self.c.execute('SELECT time FROM ohlc WHERE time<1000000000')
+            data = self.c.fetchall()
+            print len(data)
+                  
+            #self.c.execute('DELETE FROM ohlc\
+            #                 WHERE time NOT IN\
+            #                (\
+            #                  SELECT MIN(time) time\
+            #                    FROM ohlc\
+            #                   GROUP BY time\
+            #                )')
+                            
+            #self.c.execute("SELECT open FROM ohlc")
+            #data = self.c.fetchall()
+            #print len(data)
                 
         #except:
         #    e = sys.exc_info()[0]

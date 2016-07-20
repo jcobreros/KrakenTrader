@@ -46,13 +46,24 @@ class OHCL:
         self.highPrice = list()
         self.lowPrice = list()
         self.closePrice = list()
+        self.volume = list()
         
-        for i in data["result"][currency]:
-            self.dateTime.append(datetime.datetime.fromtimestamp(i[0]))
-            self.openPrice.append(i[1])
-            self.highPrice.append(i[2])
-            self.lowPrice.append(i[3])
-            self.closePrice.append(i[4])
+        if len(data['error']) > 0:
+            print data['error']
+            self.dateTime = [0]
+            self.openPrice = [0]
+            self.highPrice = [0]
+            self.lowPrice = [0]
+            self.closePrice = [0]
+            self.volume = [0]
+        else:
+            for i in data["result"][currency]:
+                self.dateTime.append(datetime.datetime.fromtimestamp(i[0]))
+                self.openPrice.append(i[1])
+                self.highPrice.append(i[2])
+                self.lowPrice.append(i[3])
+                self.closePrice.append(i[4])
+                self.volume.append(i[6])
             
 
 

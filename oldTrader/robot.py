@@ -41,7 +41,7 @@ class Robot:
         dT = datetime.timedelta.total_seconds(self.macd.dateTime[-1] - lastTrigger[1])
         print datetime.datetime.now(), str(dT) + "s since " + str(lastTrigger)
         
-        if (dT < 2*self.timeStep):
+        if (dT < 3*self.timeStep):
             if lastTrigger[0] == 'Sell':
                 if self.asset1 > 0:                   
                     for txid in self.orders:
@@ -113,7 +113,8 @@ class Robot:
         #print len(self.orderTriggers)
             self.balance.append(self.asset1 * self.ohcl.closePrice[-1] + self.asset2)
         self.totalBackTestTime = (datetime.timedelta.total_seconds(self.macd.dateTime[-1] - self.macd.dateTime[0])) / (24 * 3600)
-        self.performance = (((self.balance[-1] / self.initialBalance) - 1) / self.totalBackTestTime ) * 100;
+        #self.performance = (((self.balance[-1] / self.initialBalance) - 1) / self.totalBackTestTime ) * 100;
+        self.performance = (self.balance[-1] / self.initialBalance)
             #print self.balance
     
         

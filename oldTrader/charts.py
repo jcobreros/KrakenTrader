@@ -10,7 +10,7 @@ def prepareCharts():
     return fig
     
     
-def printCharts(cr, macd, robot, fig):
+def printCharts(ohlc, macd, robot, fig):
     markerStyleLow = dict(linestyle='-', color='red', markersize=2)
     markerStyleHigh = dict(linestyle='-', color='green', markersize=2)
     markerStyleOpen = dict(linestyle='-', color='green', markersize=2)
@@ -27,11 +27,11 @@ def printCharts(cr, macd, robot, fig):
     fig.subplots_adjust(hspace=0, left=0.1, right=0.9, top=0.9, bottom=0.1)
     plt.grid(True)
     
-    ax1.plot(cr.ohcl.dateTime, cr.ohcl.closePrice, marker=' ', c='r', linestyle='-')  # , **markerStyleClose)
-    ax1.plot(cr.ohcl.dateTime, cr.ohcl.openPrice, marker=' ', c='g', linestyle='-')  # , **markerStyleOpen)
+    ax1.plot(ohlc.dateTime, ohlc.closePrice, marker=' ', c='r', linestyle='-')  # , **markerStyleClose)
+    ax1.plot(ohlc.dateTime, ohlc.openPrice, marker=' ', c='g', linestyle='-')  # , **markerStyleOpen)
 
-    ax1.plot(cr.ohcl.dateTime, macd.movingAverage1)
-    ax1.plot(cr.ohcl.dateTime, macd.movingAverage2)
+    ax1.plot(ohlc.dateTime, macd.movingAverage1)
+    ax1.plot(ohlc.dateTime, macd.movingAverage2)
 
     for order in robot.confirmedOrders:
         if order[0] == 'Buy':
@@ -45,12 +45,12 @@ def printCharts(cr, macd, robot, fig):
         elif order[0] == 'Sell':
             ax1.plot(order[1], order[2], marker='s', markersize=5, linestyle='', c='r')
             
-    ax2.plot(cr.ohcl.dateTime, cr.ohcl.volume, linestyle=' ')
-    ax2.fill_between(cr.ohcl.dateTime, cr.ohcl.volume, 0,
-                     where=array(cr.ohcl.openPrice) - array(cr.ohcl.closePrice) < 0, facecolor='green',
+    ax2.plot(ohlc.dateTime, ohlc.volume, linestyle=' ')
+    ax2.fill_between(ohlc.dateTime, ohlc.volume, 0,
+                     where=array(ohlc.openPrice) - array(ohlc.closePrice) < 0, facecolor='green',
                      interpolate=True, lw=0)
-    ax2.fill_between(cr.ohcl.dateTime, cr.ohcl.volume, 0,
-                     where=array(cr.ohcl.openPrice) - array(cr.ohcl.closePrice) >= 0, facecolor='red', interpolate=True,
+    ax2.fill_between(ohlc.dateTime, ohlc.volume, 0,
+                     where=array(ohlc.openPrice) - array(ohlc.closePrice) >= 0, facecolor='red', interpolate=True,
                      lw=0)
 
     ax3.plot(macd.dateTime, macd.macd)
