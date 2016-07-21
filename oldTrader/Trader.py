@@ -9,6 +9,8 @@
 # This can be useful for very simple automation, where a bot is not
 # needed to constantly monitor execution.
 
+print "Importing"
+
 import ast
 import json
 import pprint
@@ -25,6 +27,7 @@ import Indicators
 readFromFile = False
 fileName = "ohlc.dat"
 
+print "Loading Kraken"
 kr = Kraken()
 
 #60 180 300 900 1800 3600 7200 14400 21600 43200 86400 259200 604800
@@ -33,6 +36,7 @@ kr = Kraken()
 #                                                1     3      7
 timeStep= 300
 cr = cryptoWatch.CryptoWatch(timeStep, False)
+
 
 if readFromFile:
     with open(fileName, 'rb') as f:
@@ -88,8 +92,8 @@ def optimize():
     return factor1
 
 if __name__ == '__main__':
-    factor1 = optimize()  
-    #factor1 = 91
+    #factor1 = optimize()  
+    factor1 = 91
     
     macd = MACD(0.26*factor1*timeStep, 0.10*factor1*timeStep, 0.09*factor1*timeStep, ohcl)
 
