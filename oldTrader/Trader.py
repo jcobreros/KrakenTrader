@@ -91,16 +91,14 @@ if __name__ == '__main__':
     factor1 = optimize()  
     #factor1 = 91
     
-    macd = MACD(0.26*factor1*timeStep, 0.10*factor1*timeStep, 0.09*factor1*timeStep, ohcl)
+    #macd = MACD(0.26*factor1*timeStep, 0.10*factor1*timeStep, 0.09*factor1*timeStep, ohcl)
 
-    print str(len(ohcl.dateTime)) + " values. Data from " + str(ohcl.dateTime[0]) + " to " + str(ohcl.dateTime[-1])
-    print ohcl
-    robot = Robot(ohcl, macd, assets, 'XETH', 'ZEUR', kr, timeStep)
-    robot.Backtest()
-    balance = robot.balance
+    #robot = Robot(ohcl, macd, assets, 'XETH', 'ZEUR', kr, timeStep)
+    #robot.Backtest()
+    #balance = robot.balance
     fig = prepareCharts()
-    printCharts(ohcl, macd, robot, fig)
-    print robot.initialBalance, robot.balance[-1], robot.performance    
+    #printCharts(ohcl, macd, robot, fig)
+    #print robot.initialBalance, robot.balance[-1], robot.performance    
     
     #derivative1 = Indicators.Derivative(macd.movingAverage1, macd.dateTime)
     #derivative2 = Indicators.Derivative(macd.movingAverage2, macd.dateTime)
@@ -115,25 +113,30 @@ if __name__ == '__main__':
         #cr.update()
         print "Running robot"
         response = kr.QueryPublic('OHLC', {'pair': 'ETHEUR', 'interval' : 5})
-        ohcl = OHCL('XETHZEUR', response)
-        print str(len(ohcl.dateTime)) + " values. Data from " + str(ohcl.dateTime[0]) + " to " + str(ohcl.dateTime[-1])
-        ticker = kr.QueryPublic('Ticker', {'pair': 'ETHEUR'})['result']['XETHZEUR']
-        print ticker
-        ask.append(ticker['a'][0])
-        bid.append(ticker['b'][0])
-        close.append(ticker['c'][0])    
-
-
-        with open("ticker.scv", "a") as myfile:
-            line = str(datetime.datetime.now()) + ";" + str(ask[-1]) + ";" + str(bid[-1]) + ";" + str(close[-1]) + "\n"        
-            myfile.write(line)
-
-        #print ticker
+        if len(response['error']) == 0:
+            ohcl = OHCL('XETHZEUR', response)
+            print str(len(ohcl.dateTime)) + " values. Data from " + str(ohcl.dateTime[0]) + " to " + str(ohcl.dateTime[-1])
+            ticker = kr.QueryPublic('Ticker', {'pair': 'ETHEUR'})
+            if len(ticker['error']) == 0:
+                ticker = ticker['result']['XETHZEUR']
+                print ticker
+                
+                ask.append(ticker['a'][0])
+                bid.append(ticker['b'][0])
+                close.append(ticker['c'][0])
+                
+                spread = ask[-1] - bid[-1]
+                print "Spread " + str(spread)
+                with open("ticker.csv", "a") as myfile:
+                    line = str(datetime.datetime.now()) + ";" + str(ask[-1]) + ";" + str(bid[-1]) + ";" + str(close[-1]) + "\n"        
+                    myfile.write(line)
         
-        macd = MACD(0.26*factor1*timeStep, 0.10*factor1*timeStep, 0.09*factor1*timeStep, ohcl)
-        robot = Robot(ohcl, macd, assets, 'XETH', 'ZEUR', kr, timeStep)
-        robot.Run()
-        printCharts(ohcl, macd, robot, fig)
+                #print ticker
+                
+                macd = MACD(0.26*factor1*timeStep, 0.10*factor1*timeStep, 0.09*factor1*timeStep, ohcl)
+                robot = Robot(ohcl, macd, assets, 'XETH', 'ZEUR', kr, timeStep)
+                robot.Run()
+                printCharts(ohcl, macd, robot, fig)
         
         if loopRobot:
             threading.Timer(30, runRobot).start()
