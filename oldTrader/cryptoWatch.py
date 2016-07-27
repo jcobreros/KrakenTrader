@@ -22,7 +22,7 @@ class CryptoWatch:
         self.readFromFile = readFromFile
         self.fileName = "CryptoWatch.dat"
         self.responseDict = dict()
-        self.ohcl = dict()
+        self.ohlc = dict()
         
     def convertFromUnicode(self, input):
         if isinstance(input, dict):
@@ -39,28 +39,28 @@ class CryptoWatch:
             return input
     def load(self):
         with open(self.fileName, 'rb') as f:
-            self.ohclDict = pickle.load(f)
-        self.ohcl = OHCL(self.ohclDict, self.timeStep)
+            self.ohlcDict = pickle.load(f)
+        self.ohlc = OHLC(self.ohlcDict, self.timeStep)
         
     def update(self):
         try:
             response = urllib2.urlopen('https://cryptowat.ch/kraken/etheur.json').read()
             self.responseDict = json.loads(response.text)
             self.responseDict = self.convertFromUnicode(self.responseDict)
-            self.ohclDict = dict()        
+            self.ohlcDict = dict()        
             for tS in self.responseDict:
-                self.ohclDict[tS] = []
+                self.ohlcDict[tS] = []
                 for i in self.responseDict[tS]:
                     split = i.split()    
                     if float(split[1]) > 0:
-                        self.ohclDict[tS].append([datetime.datetime.fromtimestamp(float(split[0])), float(split[1]), float(split[2]), float(split[3]), float(split[4]), float(split[5])])
+                        self.ohlcDict[tS].append([datetime.datetime.fromtimestamp(float(split[0])), float(split[1]), float(split[2]), float(split[3]), float(split[4]), float(split[5])])
             with open("cryptoWatch.dat", 'wb') as f:
-                pickle.dump(self.ohclDict, f, 2) 
-            self.ohcl = OHCL(self.ohclDict, self.timeStep)
+                pickle.dump(self.ohlcDict, f, 2) 
+            self.ohlc = OHLC(self.ohlcDict, self.timeStep)
             
         except httplib.IncompleteRead, e:
             response = e.partial
-            print "Incomplete read. Loading last OHCL backup"
+            print "Incomplete read. Loading last OHLC backup"
             self.load()
 
     
@@ -73,7 +73,7 @@ class CryptoWatch:
 #with open(fileName, 'rb') as f:
 #    cryptoDB = pickle.load(f)
 
-class OHCL:
+class OHLC:
     def __init__(self, data, timeStep):
         self.dateTime = list()
         self.openPrice = list()

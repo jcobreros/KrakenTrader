@@ -9,13 +9,13 @@ import datetime
 
         
 class Robot:
-    def __init__(self, ohcl, macd, assets, asset1Name, asset2Name, kr, timeStep):
+    def __init__(self, ohlc, macd, assets, asset1Name, asset2Name, kr, timeStep):
         self.assets = assets        
         self.asset1 = self.assets[asset1Name]
         self.asset2 = self.assets[asset2Name]
         self.asset1Name = asset1Name        
         self.asset2Name = asset2Name
-        self.ohcl = ohcl
+        self.ohlc = ohlc
         self.macd = macd
         self.orderTriggers = list()
         self.makerFee = 0.26 / 100
@@ -79,7 +79,7 @@ class Robot:
         self.macdMaximumTriggers()
         
         self.confirmedOrders = list()
-        self.initialBalance = self.asset1 * self.ohcl.closePrice[0] + self.asset2
+        self.initialBalance = self.asset1 * self.ohlc.closePrice[0] + self.asset2
         for order in self.orderTriggers:
             if order[0] == 'Sell':
                 if self.asset1 > 0:
@@ -111,7 +111,7 @@ class Robot:
                         self.asset2 = self.asset2 - ammountToBuy
             #print "Balance: " + str(self.asset1) + self.asset1Name + ", " + str(self.asset2) + self.asset2Name
         #print len(self.orderTriggers)
-            self.balance.append(self.asset1 * self.ohcl.closePrice[-1] + self.asset2)
+            self.balance.append(self.asset1 * self.ohlc.closePrice[-1] + self.asset2)
         self.totalBackTestTime = (datetime.timedelta.total_seconds(self.macd.dateTime[-1] - self.macd.dateTime[0])) / (24 * 3600)
         #self.performance = (((self.balance[-1] / self.initialBalance) - 1) / self.totalBackTestTime ) * 100;
         self.performance = (self.balance[-1] / self.initialBalance)
@@ -127,9 +127,9 @@ class Robot:
         for i in triggerIndices:
             if i > startAt:
                 if self.macd.histogram[i] > 0 and self.macd.histogram[i] > minimumMax:
-                    self.orderTriggers.append(['Sell', self.ohcl.dateTime[i], self.ohcl.closePrice[i]])  
+                    self.orderTriggers.append(['Sell', self.ohlc.dateTime[i], self.ohlc.closePrice[i]])  
                 elif self.macd.histogram[i] < 0 and self.macd.histogram[i] < - minimumMax:
-                    self.orderTriggers.append(['Buy', self.ohcl.dateTime[i], self.ohcl.closePrice[i]])
+                    self.orderTriggers.append(['Buy', self.ohlc.dateTime[i], self.ohlc.closePrice[i]])
         
     def macdCrossoverTriggers(self):
         startAt = 10
@@ -140,8 +140,8 @@ class Robot:
         for i in range(startAt+1, len(self.macd.histogram)):
             if self.macd.histogram[i] > 0 and histogramSign < 0:
                 histogramSign = 1
-                self.orderTriggers.append(['Buy', self.ohcl.dateTime[i], self.ohcl.closePrice[i]])            
+                self.orderTriggers.append(['Buy', self.ohlc.dateTime[i], self.ohlc.closePrice[i]])            
             elif self.macd.histogram[i] < 0 and histogramSign > 0:
                 histogramSign = -1
-                self.orderTriggers.append(['Sell', self.ohcl.dateTime[i], self.ohcl.closePrice[i]])
+                self.orderTriggers.append(['Sell', self.ohlc.dateTime[i], self.ohlc.closePrice[i]])
         

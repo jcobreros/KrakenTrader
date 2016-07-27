@@ -39,7 +39,7 @@ class Kraken:
         
     
         
-class OHCL:
+class OHLC:
     def __init__(self, currency, data):
         self.dateTime = list()
         self.openPrice = list()
