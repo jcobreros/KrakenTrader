@@ -21,12 +21,11 @@ def init_model(engine):
     """Call me before using any of the tables or classes in the model."""
     DBSession.configure(bind=engine)
 
-# you could have your models defined within this module, for larger applications
-# it is probably nicer to work with to have them in separate modules and
-# import them as shown below.
+# you could have your models defined within this module, for larger applications it is
+# probably nicer to have them in separate modules and import them as shown below.
 #
 # remember to define __ALL__ in each module
 
 # Import your model modules here.
-from models import m_ohlc
-from models import m_ticker
+from models.m_ohlc import *
+from models.m_ticker import *

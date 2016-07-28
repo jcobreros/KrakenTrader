@@ -27,7 +27,7 @@
     <Compile Include="src\base_app.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="src\Kraken.py" />
+    <Compile Include="src\sources\s_kraken.py" />
     <Compile Include="src\models\m_ohlc.py">
       <SubType>Code</SubType>
     </Compile>
@@ -56,6 +56,7 @@
     <Folder Include="src\" />
     <Folder Include="oldTrader" />
     <Folder Include="src\models\" />
+    <Folder Include="src\sources\" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
