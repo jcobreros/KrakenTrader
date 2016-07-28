@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{b440706f-13bb-40ce-9a27-0b13a1e85c85}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>Kraken.py</StartupFile>
+    <StartupFile>src\base_app.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -21,8 +21,23 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Kraken.py" />
-    <Compile Include="Ohlc.py" />
+    <Compile Include="src\app_constants.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\base_app.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\Kraken.py" />
+    <Compile Include="src\models\m_ohlc.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\models\m_ticker.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\models\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\Ohlc.py" />
     <Compile Include="oldTrader\charts.py" />
     <Compile Include="oldTrader\cryptoWatch.py" />
     <Compile Include="oldTrader\Indicators.py" />
@@ -30,12 +45,17 @@
     <Compile Include="oldTrader\parallelTest.py" />
     <Compile Include="oldTrader\robot.py" />
     <Compile Include="oldTrader\Trader.py" />
+    <Compile Include="src\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="oldTrader\log.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="src\" />
     <Folder Include="oldTrader" />
+    <Folder Include="src\models\" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
